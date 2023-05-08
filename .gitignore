@@ -4,4 +4,4 @@ coverage/
 febeprograma.sh
 .vscode/
 .nyc_output/
-.github/
+.github/workflows/
