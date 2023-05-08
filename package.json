@@ -5,9 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "mocha",
-    "coverage": "c8 mocha && c8 report --reporter=lcov",
-    "start": "tsc-watch --onSuccess \"node dist/funko-app.js\"",
+    "test": "mocha --exit",
+    "coverage": "c8 npm test && c8 report --reporter=lcov",
+    "start": "tsc-watch --onSuccess \"node dist/index.js\"",
     "doc": "typedoc; touch ./docs/.nojekyll"
   },
   "repository": {
@@ -25,6 +25,7 @@
     "@types/chai": "^4.3.5",
     "@types/express": "^4.17.17",
     "@types/mocha": "^10.0.1",
+    "@types/supertest": "^2.0.12",
     "@types/yargs": "^17.0.24",
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
@@ -35,6 +36,7 @@
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",
     "prettier": "^2.8.8",
+    "supertest": "^6.3.3",
     "ts-node": "^10.9.1",
     "tsc-watch": "^6.0.4",
     "typedoc": "^0.24.6"
