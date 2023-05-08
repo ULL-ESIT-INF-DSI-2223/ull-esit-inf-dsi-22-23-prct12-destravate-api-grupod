@@ -1,6 +1,6 @@
 import { Document, model, Schema } from "mongoose";
-import { TrackInterface } from "./track";
-import { UsuarioInterface } from "./usuarios";
+import { TrackInterface } from "./track.js";
+import { UsuarioInterface } from "./usuarios.js";
 
 export interface RetoInterface extends Document {
   reto_id: number;

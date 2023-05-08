@@ -1,5 +1,5 @@
 import { Document, model, Schema } from "mongoose";
-import { UsuarioInterface } from "./usuarios";
+import { UsuarioInterface } from "./usuarios.js";
 
 export interface TrackInterface extends Document {
   track_id: number;

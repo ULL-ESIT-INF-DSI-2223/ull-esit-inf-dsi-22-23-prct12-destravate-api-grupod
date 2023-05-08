@@ -1,12 +1,14 @@
 import { Document, model, Schema } from "mongoose";
-import { TrackInterface } from "./track";
-import { UsuarioInterface } from "./usuarios";
+import { TrackInterface } from "./track.js";
+import { RetoInterface } from "./retos.js";
 
-export interface GrupoInterface extends Document {
-  grupo_id: number;
-  grupo_nombre: string;
-  participantes: UsuarioInterface[];
-  estadisticas_grupales: {
+export interface UsuarioInterface extends Document {
+  usuario_id: number;
+  usuario_nombre: string;
+  actividad: "correr" | "bicicleta";
+  amigos: number[];
+  grupos: number[];
+  estadisticas: {
     km_semana: number;
     km_mes: number;
     km_ano: number;
@@ -15,33 +17,36 @@ export interface GrupoInterface extends Document {
     desnivel_ano: number;
   };
   rutas_favoritas: TrackInterface[];
-  historico_rutas: { fecha: Date; ruta: TrackInterface }[];
+  retos_activos: RetoInterface[];
+  historico_rutas: { fehca: Date; ruta: TrackInterface }[];
 }
 
-const GrupoSchema = new Schema<GrupoInterface>({
-  grupo_id: {
+const UsuarioSchema = new Schema<UsuarioInterface>({
+  usuario_id: {
     type: Number,
     required: true,
     unique: true,
     validate(value: number) {
       if (value < 0) {
-        throw new Error("grupo_id must be a positive number");
+        throw new Error("usuario_id must be a positive number");
       }
     },
   },
-  grupo_nombre: {
+  usuario_nombre: {
     type: String,
     required: true,
     unique: true,
     trim: true,
     validate(value: string) {
       if (value.length < 3) {
-        throw new Error("grupo_nombre must be at least 3 characters long");
+        throw new Error("usuario_nombre must be at least 3 characters long");
       }
     },
   },
-  participantes: { type: [Schema.Types.ObjectId] },
-  estadisticas_grupales: {
+  actividad: { type: String, required: true, trim: true },
+  amigos: { type: [Number], required: true },
+  grupos: { type: [Number], required: true },
+  estadisticas: {
     km_semana: {
       type: Number,
       required: true,
@@ -98,7 +103,11 @@ const GrupoSchema = new Schema<GrupoInterface>({
     },
   },
   rutas_favoritas: { type: [Schema.Types.ObjectId], required: true },
-  historico_rutas: { type: [{ fecha: Date, ruta: Schema.Types.ObjectId }], required: true },
+  retos_activos: { type: [Schema.Types.ObjectId], required: true },
+  historico_rutas: {
+    type: [{ fecha: Date, ruta: Schema.Types.ObjectId }],
+    required: true,
+  },
 });
 
-export const Grupo = model<GrupoInterface>("Grupo", GrupoSchema);
+export const Usuario = model<UsuarioInterface>("Usuario", UsuarioSchema);
