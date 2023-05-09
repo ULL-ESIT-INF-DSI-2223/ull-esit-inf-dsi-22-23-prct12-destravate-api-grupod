@@ -82,3 +82,5 @@ usuariosRouter.patch("/users", async (req, res) => {
     res.status(500).send(error);
   }
 });
+
+// usuariosRouter.delete("/users", async (req, res) => {});
