@@ -1,13 +1,14 @@
 import { Document, model, Schema } from "mongoose";
 import { TrackInterface } from "./track.js";
 import { RetoInterface } from "./retos.js";
+import { GrupoInterface } from "./grupos.js";
 
 export interface UsuarioInterface extends Document {
   usuario_id: number;
   usuario_nombre: string;
   actividad: "correr" | "bicicleta";
   amigos: number[];
-  grupos: number[];
+  grupos: GrupoInterface[];
   estadisticas: {
     km_semana: number;
     km_mes: number;
