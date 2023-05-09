@@ -46,7 +46,7 @@ usuariosRouter.get("/users", async (req, res) => {
 });
 
 usuariosRouter.patch("/users", async (req, res) => {
-  if (!req.query.usuario_nombre) {
+  if (!req.query.usuario_nombre && !req.query.usuario_id) {
     return res.status(400).send({
       error:
         "You must provide at least one of the following: usuario_id, usuario_nombre",
@@ -64,16 +64,18 @@ usuariosRouter.patch("/users", async (req, res) => {
     });
   }
   try {
-    const user = await Usuario.findOneAndUpdate(
-      {
-        usuario_nombre: req.query.usuario_nombre.toString(),
-      },
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    let filter: FilterType;
+    if (req.query.usuario_id) {
+      filter = { usuario_id: req.query.usuario_id.toString() };
+    } else if (req.query.usuario_nombre) {
+      filter = { usuario_nombre: req.query.usuario_nombre.toString() };
+    } else {
+      filter = {};
+    }
+    const user = await Usuario.findOneAndUpdate(filter, req.body, {
+      new: true,
+      runValidators: true,
+    });
     if (user) {
       return res.send(user);
     }

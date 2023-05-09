@@ -44,7 +44,12 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
       }
     },
   },
-  actividad: { type: String, required: true, trim: true },
+  actividad: {
+    type: String,
+    required: true,
+    trim: true,
+    enum: ["correr", "bicicleta"],
+  },
   amigos: { type: [Number], default: [] },
   grupos: { type: [Number], default: [] },
   estadisticas: {
