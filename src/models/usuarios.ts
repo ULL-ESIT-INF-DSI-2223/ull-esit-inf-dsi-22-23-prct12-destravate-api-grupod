@@ -44,12 +44,12 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
     },
   },
   actividad: { type: String, required: true, trim: true },
-  amigos: { type: [Number], required: true },
-  grupos: { type: [Number], required: true },
+  amigos: { type: [Number], default: [] },
+  grupos: { type: [Number], default: [] },
   estadisticas: {
     km_semana: {
       type: Number,
-      required: true,
+      default: 0,
       validate(value: number) {
         if (value < 0) {
           throw new Error("km_semana must be a positive number");
@@ -58,7 +58,7 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
     },
     km_mes: {
       type: Number,
-      required: true,
+      default: 0,
       validate(value: number) {
         if (value < 0) {
           throw new Error("km_semana must be a positive number");
@@ -67,7 +67,7 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
     },
     km_ano: {
       type: Number,
-      required: true,
+      default: 0,
       validate(value: number) {
         if (value < 0) {
           throw new Error("km_semana must be a positive number");
@@ -76,7 +76,7 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
     },
     desnivel_semana: {
       type: Number,
-      required: true,
+      default: 0,
       validate(value: number) {
         if (value < 0) {
           throw new Error("km_semana must be a positive number");
@@ -85,7 +85,7 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
     },
     desnivel_mes: {
       type: Number,
-      required: true,
+      default: 0,
       validate(value: number) {
         if (value < 0) {
           throw new Error("km_semana must be a positive number");
@@ -94,7 +94,7 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
     },
     desnivel_ano: {
       type: Number,
-      required: true,
+      default: 0,
       validate(value: number) {
         if (value < 0) {
           throw new Error("km_semana must be a positive number");
@@ -102,11 +102,11 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
       },
     },
   },
-  rutas_favoritas: { type: [Schema.Types.ObjectId], required: true },
-  retos_activos: { type: [Schema.Types.ObjectId], required: true },
+  rutas_favoritas: { type: [Schema.Types.ObjectId], default: [] },
+  retos_activos: { type: [Schema.Types.ObjectId], default: [] },
   historico_rutas: {
     type: [{ fecha: Date, ruta: Schema.Types.ObjectId }],
-    required: true,
+    default: [],
   },
 });
 
