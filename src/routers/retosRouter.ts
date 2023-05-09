@@ -24,11 +24,9 @@ retosRouter.post("/challenges", async (req, res) => {
 retosRouter.get("/challenges", async (req, res) => {
   let filter: NameIdType;
   if (req.query.reto_id) {
-    filter = req.query.reto_id ? { reto_id: req.query.reto_id.toString() } : {};
+    filter = { reto_id: req.query.reto_id.toString() };
   } else if (req.query.reto_nombre) {
-    filter = req.query.reto_nombre
-      ? { reto_nombre: req.query.reto_nombre.toString() }
-      : {};
+    filter = { reto_nombre: req.query.reto_nombre.toString() };
   } else {
     filter = {};
   }
@@ -44,7 +42,7 @@ retosRouter.get("/challenges", async (req, res) => {
 });
 
 retosRouter.patch("/challenges", async (req, res) => {
-  if (!req.query.reto_id) {
+  if (!req.query.reto_id && !req.query.reto_nombre) {
     return res.status(400).send({
       error: "You must provide at least one of the following: reto_id",
     });
@@ -64,11 +62,19 @@ retosRouter.patch("/challenges", async (req, res) => {
     return res.status(400).send({ error: "Invalid update" });
   }
   try {
-    const reto = await Reto.findOneAndUpdate(
-      { reto_id: req.query.reto_id.toString() },
-      req.body,
-      { new: true, runValidators: true }
-    );
+    let filter: NameIdType;
+    if (req.query.reto_id) {
+      filter = { reto_id: req.query.reto_id.toString() };
+    } else if (req.query.reto_nombre) {
+      filter = { reto_nombre: req.query.reto_nombre.toString() };
+    } else {
+      filter = {};
+    }
+
+    const reto = await Reto.findOneAndUpdate(filter, req.body, {
+      new: true,
+      runValidators: true,
+    });
     if (reto) {
       return res.status(200).send(reto);
     }
@@ -79,33 +85,35 @@ retosRouter.patch("/challenges", async (req, res) => {
 });
 
 retosRouter.delete("/challenges", async (req, res) => {
-  if (!req.query.reto_id) {
+  if (!req.query.reto_id && !req.query.reto_nombre) {
     return res.status(400).send({
-      error: "You must provide at least one of the following: reto_id",
+      error:
+        "You must provide at least one of the following: reto_id, reto_nombre",
     });
   }
 
   let filter: NameIdType;
   if (req.query.reto_id) {
-    filter = req.query.reto_id ? { reto_id: req.query.reto_id.toString() } : {};
+    filter = { reto_id: req.query.reto_id.toString() };
   } else if (req.query.reto_nombre) {
-    filter = req.query.reto_nombre
-      ? { reto_nombre: req.query.reto_nombre.toString() }
-      : {};
+    filter = { reto_nombre: req.query.reto_nombre.toString() };
   } else {
     filter = {};
   }
   try {
-    const reto = await Reto.findOne({
-      reto_id: req.query.reto_id.toString(),
-    });
-    if (!reto) {
-      return res.status(404).send({ error: "Reto not found" });
+    let filter: NameIdType;
+    if (req.query.reto_id) {
+      filter = { reto_id: req.query.reto_id.toString() };
+    } else if (req.query.reto_nombre) {
+      filter = { reto_nombre: req.query.reto_nombre.toString() };
+    } else {
+      filter = {};
     }
-    const result = await Reto.deleteOne(filter);
-    if (result.deletedCount) {
+    const reto = await Reto.findOneAndDelete(filter);
+    if (reto) {
       return res.status(200).send(reto);
     }
+
     return res.status(404).send({ error: "Reto not found" });
   } catch (error) {
     return res.status(500).send(error);

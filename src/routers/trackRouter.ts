@@ -24,13 +24,9 @@ trackRouter.post("/tracks", async (req, res) => {
 trackRouter.get("/tracks", async (req, res) => {
   let filter: NameIdType;
   if (req.query.track_id) {
-    filter = req.query.track_id
-      ? { track_id: req.query.track_id.toString() }
-      : {};
+    filter = { track_id: req.query.track_id.toString() };
   } else if (req.query.track_nombre) {
-    filter = req.query.track_nombre
-      ? { track_nombre: req.query.track_nombre.toString() }
-      : {};
+    filter = { track_nombre: req.query.track_nombre.toString() };
   } else {
     filter = {};
   }
@@ -46,9 +42,10 @@ trackRouter.get("/tracks", async (req, res) => {
 });
 
 trackRouter.patch("/tracks", async (req, res) => {
-  if (!req.query.track_id) {
+  if (!req.query.track_id && !req.query.track_nombre) {
     return res.status(400).send({
-      error: "You must provide at least one of the following: track_id",
+      error:
+        "You must provide at least one of the following: track_id, track_nombre",
     });
   }
   const allowedUpdates = [
@@ -56,7 +53,6 @@ trackRouter.patch("/tracks", async (req, res) => {
     "localizacionInicio",
     "localizacionFin",
     "desnivel",
-    "usuarios_realizados",
     "tipo",
     "calificacion",
   ];
@@ -68,13 +64,18 @@ trackRouter.patch("/tracks", async (req, res) => {
     return res.status(400).send({ error: "Invalid update" });
   }
   try {
-    const track = await Track.findOneAndUpdate(
-      {
-        track_id: req.query.track_id.toString(),
-      },
-      req.body,
-      { new: true, runValidators: true }
-    );
+    let filter: NameIdType;
+    if (req.query.track_id) {
+      filter = { track_id: req.query.track_id.toString() };
+    } else if (req.query.track_nombre) {
+      filter = { track_nombre: req.query.track_nombre.toString() };
+    } else {
+      filter = {};
+    }
+    const track = await Track.findOneAndUpdate(filter, req.body, {
+      new: true,
+      runValidators: true,
+    });
     if (track) {
       return res.status(200).send(track);
     }
@@ -85,7 +86,7 @@ trackRouter.patch("/tracks", async (req, res) => {
 });
 
 trackRouter.delete("/tracks", async (req, res) => {
-  if (!req.query.track_id || !req.query.track_nombre) {
+  if (!req.query.track_id && !req.query.track_nombre) {
     return res.status(400).send({
       error:
         "You must provide at least one of the following: track_id or track_nombre",
@@ -94,29 +95,17 @@ trackRouter.delete("/tracks", async (req, res) => {
 
   let filter: NameIdType;
   if (req.query.track_id) {
-    filter = req.query.track_id
-      ? { track_id: req.query.track_id.toString() }
-      : {};
+    filter = { track_id: req.query.track_id.toString() };
   } else if (req.query.track_nombre) {
-    filter = req.query.track_nombre
-      ? { track_nombre: req.query.track_nombre.toString() }
-      : {};
+    filter = { track_nombre: req.query.track_nombre.toString() };
   } else {
     filter = {};
   }
   try {
-    const track = await Track.findOne({
-      track_id: req.query.track_id.toString(),
-    });
-    if (!track) {
-      return res.status(404).send({ error: "Track not found" });
-    }
-
-    const result = await Track.deleteOne(filter);
-    if (result.deletedCount !== 0) {
+    const track = await Track.findOneAndDelete(filter);
+    if (track) {
       return res.status(200).send(track);
     }
-
     return res.status(404).send({ error: "Track not found" });
   } catch (error) {
     return res.status(500).send(error);

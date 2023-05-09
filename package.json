@@ -7,7 +7,8 @@
   "scripts": {
     "test": "mocha --exit",
     "coverage": "c8 npm test && c8 report --reporter=lcov",
-    "start": "tsc-watch --onSuccess \"node dist/index.js\"",
+    "dev": "tsc-watch --onSuccess \"node dist/index.js\"",
+    "start": "node dist/index.js",
     "doc": "typedoc; touch ./docs/.nojekyll"
   },
   "repository": {

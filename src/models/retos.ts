@@ -34,7 +34,12 @@ const RetoSchema = new Schema<RetoInterface>({
     },
   },
   rutas: { type: [Schema.Types.ObjectId], required: true },
-  tipo: { type: String, trim: true, required: true },
+  tipo: {
+    type: String,
+    trim: true,
+    required: true,
+    enum: ["correr", "bicicleta"],
+  },
   km_totales: {
     type: Number,
     required: true,

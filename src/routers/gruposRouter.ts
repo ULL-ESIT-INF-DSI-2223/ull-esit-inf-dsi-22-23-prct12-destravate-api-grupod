@@ -24,13 +24,9 @@ gruposRouter.post("/groups", async (req, res) => {
 gruposRouter.get("/groups", async (req, res) => {
   let filter: NameIdType;
   if (req.query.grupo_id) {
-    filter = req.query.grupo_id
-      ? { grupo_id: req.query.grupo_id.toString() }
-      : {};
+    filter = { grupo_id: req.query.grupo_id.toString() };
   } else if (req.query.grupo_nombre) {
-    filter = req.query.grupo_nombre
-      ? { grupo_nombre: req.query.grupo_nombre.toString() }
-      : {};
+    filter = { grupo_nombre: req.query.grupo_nombre.toString() };
   } else {
     filter = {};
   }
@@ -46,7 +42,7 @@ gruposRouter.get("/groups", async (req, res) => {
 });
 
 gruposRouter.patch("/groups", async (req, res) => {
-  if (!req.query.grupo_id) {
+  if (!req.query.grupo_id && !req.query.grupo_nombre) {
     return res.status(400).send({
       error: "You must provide at least one of the following: grupo_id",
     });
@@ -66,11 +62,18 @@ gruposRouter.patch("/groups", async (req, res) => {
     return res.status(400).send({ error: "Invalid update" });
   }
   try {
-    const grupo = await Grupo.findOneAndUpdate(
-      { grupo_id: req.query.grupo_id.toString() },
-      req.body,
-      { new: true, runValidators: true }
-    );
+    let filter: NameIdType;
+    if (req.query.grupo_id) {
+      filter = { grupo_id: req.query.grupo_id.toString() };
+    } else if (req.query.grupo_nombre) {
+      filter = { grupo_nombre: req.query.grupo_nombre.toString() };
+    } else {
+      filter = {};
+    }
+    const grupo = await Grupo.findOneAndUpdate(filter, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (grupo) {
       return res.status(200).send(grupo);
@@ -82,31 +85,23 @@ gruposRouter.patch("/groups", async (req, res) => {
 });
 
 gruposRouter.delete("/groups", async (req, res) => {
-  if (!req.query.grupo_id) {
+  if (!req.query.grupo_id && !req.query.grupo_nombre) {
     return res.status(400).send({
-      error: "You must provide at least one of the following: grupo_id",
+      error:
+        "You must provide at least one of the following: grupo_id, grupo_nombre",
     });
   }
   let filter: NameIdType;
   if (req.query.grupo_id) {
-    filter = req.query.grupo_id
-      ? { grupo_id: req.query.grupo_id.toString() }
-      : {};
+    filter = { grupo_id: req.query.grupo_id.toString() };
   } else if (req.query.grupo_nombre) {
-    filter = req.query.grupo_nombre
-      ? { grupo_nombre: req.query.grupo_nombre.toString() }
-      : {};
+    filter = { grupo_nombre: req.query.grupo_nombre.toString() };
   } else {
     filter = {};
   }
   try {
-    const grupo = await Grupo.findOne(filter);
-    if (!grupo) {
-      return res.status(404).send({ error: "Group not found" });
-    }
-
-    const result = await Grupo.deleteOne(filter);
-    if (result.deletedCount !== 0) {
+    const grupo = await Grupo.findOneAndDelete(filter);
+    if (grupo) {
       return res.status(200).send(grupo);
     }
     return res.status(404).send({ error: "Group not found" });
