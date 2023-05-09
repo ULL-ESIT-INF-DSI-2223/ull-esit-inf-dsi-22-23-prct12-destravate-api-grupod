@@ -82,3 +82,30 @@ usuariosRouter.patch("/users", async (req, res) => {
     res.status(500).send(error);
   }
 });
+
+usuariosRouter.delete("/users", async (req, res) => {
+  if (!req.query.usuario_nombre) {
+    return res.status(400).send({
+      error:
+        "You must provide at least one of the following: usuario_id, usuario_nombre",
+    });
+  }
+  try {
+    const user = await Usuario.findOne({
+      usuario_nombre: req.query.usuario_nombre.toString(),
+    });
+    if (!user) {
+      return res.status(404).send({ error: "User not found" });
+    }
+
+    const result = await Usuario.deleteOne({
+      usuario_nombre: req.query.usuario_nombre.toString(),
+    });
+    if (result) {
+      return res.send(user);
+    }
+    return res.status(404).send({ error: "User not found" });
+  } catch (error) {
+    return res.status(500).send(error);
+  }
+});
