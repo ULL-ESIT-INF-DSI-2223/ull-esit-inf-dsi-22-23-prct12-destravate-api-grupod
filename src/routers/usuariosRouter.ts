@@ -84,3 +84,30 @@ usuariosRouter.patch("/users", async (req, res) => {
     res.status(500).send(error);
   }
 });
+
+usuariosRouter.delete("/users", async (req, res) => {
+  if (!req.query.usuario_nombre && !req.query.usuario_id) {
+    return res.status(400).send({
+      error:
+        "You must provide at least one of the following: usuario_id, usuario_nombre",
+    });
+  }
+  try {
+    let filter: FilterType;
+    if (req.query.usuario_id) {
+      filter = { usuario_id: req.query.usuario_id.toString() };
+    } else if (req.query.usuario_nombre) {
+      filter = { usuario_nombre: req.query.usuario_nombre.toString() };
+    } else {
+      filter = {};
+    }
+    const user = await Usuario.findOneAndDelete(filter);
+    if (!user) {
+      return res.status(404).send({ error: "User not found" });
+    }
+    await Usuario.findByIdAndDelete(user._id);
+    return res.send(user);
+  } catch (error) {
+    return res.status(500).send(error);
+  }
+});
