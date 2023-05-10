@@ -1,6 +1,6 @@
 import request from "supertest";
 import { app } from "../src/app.js";
-import { Reto } from "../src/models/challenges.js";
+import { Reto } from "../src/models/retos.js";
 
 const reto = {
   reto_id: 999,
