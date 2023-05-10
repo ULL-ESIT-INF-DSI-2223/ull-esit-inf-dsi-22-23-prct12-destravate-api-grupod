@@ -81,7 +81,7 @@ usuariosRouter.patch("/users", async (req, res) => {
     }
     return res.status(404).send({ error: "User not found" });
   } catch (error) {
-    res.status(500).send(error);
+    return res.status(500).send(error);
   }
 });
 

@@ -92,14 +92,6 @@ retosRouter.delete("/challenges", async (req, res) => {
     });
   }
 
-  let filter: NameIdType;
-  if (req.query.reto_id) {
-    filter = { reto_id: req.query.reto_id.toString() };
-  } else if (req.query.reto_nombre) {
-    filter = { reto_nombre: req.query.reto_nombre.toString() };
-  } else {
-    filter = {};
-  }
   try {
     let filter: NameIdType;
     if (req.query.reto_id) {
