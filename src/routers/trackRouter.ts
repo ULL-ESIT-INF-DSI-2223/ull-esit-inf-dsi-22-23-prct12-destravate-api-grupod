@@ -2,6 +2,7 @@ import express from "express";
 import { Track } from "../models/track.js";
 
 export const trackRouter = express.Router();
+
 type NameIdType =
   | {
       track_id?: string;
@@ -31,7 +32,7 @@ trackRouter.get("/tracks", async (req, res) => {
     filter = {};
   }
   try {
-    const tracks = await Track.find(filter);
+    const tracks = await Track.find(filter).populate({path:"usuarios_realizados", select: "usuario_nombre"});
     if (tracks.length !== 0) {
       return res.status(200).send(tracks);
     }
@@ -53,6 +54,7 @@ trackRouter.patch("/tracks", async (req, res) => {
     "localizacionInicio",
     "localizacionFin",
     "desnivel",
+    "usuarios_realizados",
     "tipo",
     "calificacion",
   ];
