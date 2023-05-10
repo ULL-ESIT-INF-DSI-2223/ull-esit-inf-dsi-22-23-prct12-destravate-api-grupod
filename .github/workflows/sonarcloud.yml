@@ -1,15 +1,15 @@
-name: Coveralls
+name: Sonar-Cloud
 
 on:
   push:
-    branches: ["main"]
+    branches: [ main ]
   pull_request:
-    branches: ["main"]
+    branches: [ main ]
 
 jobs:
-  build:
+  sonarcloud:
+    name: SonarCloud
     runs-on: ubuntu-latest
-
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -18,20 +18,21 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20.x
-          cache: "npm"
+          cache: 'npm'
 
       - name: Start MongoDB 6.0
         uses: supercharge/mongodb-github-action@1.9.0
         with:
-          mongodb-version: "6.0"
+          mongodb-version: '6.0'
 
-      - name: Install dependencies
-        run: npm i
+      - name: Install dependencies 
+        run: npm i 
 
       - name: Generate coverage info
-        run: npm run coverage
+        run: npm run coverage 
 
-      - name: Coveralls
-        uses: coverallsapp/github-action@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
