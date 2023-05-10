@@ -45,14 +45,18 @@ const TrackSchema = new Schema<TrackInterface>({
       }
     },
   },
-  usuarios_realizados: { type: [Schema.Types.ObjectId], required: true, ref: "Usuario" },
+  usuarios_realizados: {
+    type: [Schema.Types.ObjectId],
+    ref: "Usuario",
+    default: [],
+  },
   tipo: {
     type: String,
     trim: true,
     required: true,
     enum: ["correr", "bicicleta"],
   },
-  calificacion: { type: Number, required: true, min: 0, max: 5 },
+  calificacion: { type: Number, min: 0, max: 5, default: 0 },
 });
 
 export const Track = model<TrackInterface>("Track", TrackSchema);

@@ -33,7 +33,7 @@ const RetoSchema = new Schema<RetoInterface>({
       }
     },
   },
-  rutas: { type: [Schema.Types.ObjectId], required: true, ref: "Track" },
+  rutas: { type: [Schema.Types.ObjectId], ref: "Track", default: [] },
   tipo: {
     type: String,
     trim: true,
@@ -49,7 +49,11 @@ const RetoSchema = new Schema<RetoInterface>({
       }
     },
   },
-  usuarios_realizando: { type: [Schema.Types.ObjectId], required: true, ref: "Usuario" },
+  usuarios_realizando: {
+    type: [Schema.Types.ObjectId],
+    ref: "Usuario",
+    default: [],
+  },
 });
 
 export const Reto = model<RetoInterface>("Reto", RetoSchema);

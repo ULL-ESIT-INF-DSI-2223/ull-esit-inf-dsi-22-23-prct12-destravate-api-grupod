@@ -33,7 +33,6 @@ const GrupoSchema = new Schema<GrupoInterface>({
     type: String,
     required: true,
     unique: true,
-    trim: true,
     validate(value: string) {
       if (value.length < 3) {
         throw new Error("grupo_nombre must be at least 3 characters long");
@@ -44,7 +43,7 @@ const GrupoSchema = new Schema<GrupoInterface>({
   estadisticas_grupales: {
     km_semana: {
       type: Number,
-      required: true,
+      default: 0,
       validate(value: number) {
         if (value < 0) {
           throw new Error("km_semana must be a positive number");
@@ -53,7 +52,7 @@ const GrupoSchema = new Schema<GrupoInterface>({
     },
     km_mes: {
       type: Number,
-      required: true,
+      default: 0,
       validate(value: number) {
         if (value < 0) {
           throw new Error("km_semana must be a positive number");
@@ -62,7 +61,7 @@ const GrupoSchema = new Schema<GrupoInterface>({
     },
     km_ano: {
       type: Number,
-      required: true,
+      default: 0,
       validate(value: number) {
         if (value < 0) {
           throw new Error("km_semana must be a positive number");
@@ -71,7 +70,7 @@ const GrupoSchema = new Schema<GrupoInterface>({
     },
     desnivel_semana: {
       type: Number,
-      required: true,
+      default: 0,
       validate(value: number) {
         if (value < 0) {
           throw new Error("km_semana must be a positive number");
@@ -80,7 +79,7 @@ const GrupoSchema = new Schema<GrupoInterface>({
     },
     desnivel_mes: {
       type: Number,
-      required: true,
+      default: 0,
       validate(value: number) {
         if (value < 0) {
           throw new Error("km_semana must be a positive number");
@@ -89,7 +88,7 @@ const GrupoSchema = new Schema<GrupoInterface>({
     },
     desnivel_ano: {
       type: Number,
-      required: true,
+      default: 0,
       validate(value: number) {
         if (value < 0) {
           throw new Error("km_semana must be a positive number");
@@ -99,12 +98,12 @@ const GrupoSchema = new Schema<GrupoInterface>({
   },
   rutas_favoritas: {
     type: [Schema.Types.ObjectId],
-    required: true,
+    default: [],
     ref: "Track",
   },
   historico_rutas: {
     type: [{ fecha: Date, ruta: Schema.Types.ObjectId }],
-    required: true,
+    default: [],
     ref: "Track",
   },
 });
