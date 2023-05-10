@@ -36,6 +36,9 @@ describe("GET /users", () => {
   it("Debería poder obtener un usuario por su id", async () => {
     await request(app).get("/users?usuario_id=999").expect(200);
   });
+  it("Debería poder obtener todos los usuarios", async () => {
+    await request(app).get("/users").expect(200);
+  });
   it("Debería fallar al intentar obtener un usuario que no existe", async () => {
     await request(app).get("/users?usuario_id=123").expect(404);
   });

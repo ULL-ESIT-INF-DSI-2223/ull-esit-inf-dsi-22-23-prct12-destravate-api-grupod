@@ -23,13 +23,11 @@ gruposRouter.post("/groups", async (req, res) => {
 });
 
 gruposRouter.get("/groups", async (req, res) => {
-  let filter: NameIdType;
+  let filter: NameIdType = {};
   if (req.query.grupo_id) {
     filter = { grupo_id: req.query.grupo_id.toString() };
   } else if (req.query.grupo_nombre) {
     filter = { grupo_nombre: req.query.grupo_nombre.toString() };
-  } else {
-    filter = {};
   }
   try {
     const grupos = await Grupo.find(filter);
@@ -63,13 +61,11 @@ gruposRouter.patch("/groups", async (req, res) => {
     return res.status(400).send({ error: "Invalid update" });
   }
   try {
-    let filter: NameIdType;
+    let filter: NameIdType = {};
     if (req.query.grupo_id) {
       filter = { grupo_id: req.query.grupo_id.toString() };
     } else if (req.query.grupo_nombre) {
       filter = { grupo_nombre: req.query.grupo_nombre.toString() };
-    } else {
-      filter = {};
     }
     const grupo = await Grupo.findOneAndUpdate(filter, req.body, {
       new: true,
@@ -93,13 +89,11 @@ gruposRouter.delete("/groups", async (req, res) => {
     });
   }
   try {
-    let filter: NameIdType;
+    let filter: NameIdType = {};
     if (req.query.grupo_id) {
       filter = { grupo_id: req.query.grupo_id.toString() };
     } else if (req.query.grupo_nombre) {
       filter = { grupo_nombre: req.query.grupo_nombre.toString() };
-    } else {
-      filter = {};
     }
 
     // Eliminar el grupo de los usuarios

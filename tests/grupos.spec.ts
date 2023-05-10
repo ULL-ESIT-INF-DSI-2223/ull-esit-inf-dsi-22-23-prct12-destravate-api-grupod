@@ -34,6 +34,9 @@ describe("GET /groups", () => {
   it("Debería poder obtener un grupo por su id", async () => {
     await request(app).get("/groups?grupo_id=999").expect(200);
   });
+  it("Debería poder obtener todos los grupos", async () => {
+    await request(app).get("/groups").expect(200);
+  });
   it("Debería fallar al intentar obtener un grupo que no existe", async () => {
     await request(app).get("/groups?grupo_id=123").expect(404);
   });

@@ -26,13 +26,11 @@ trackRouter.post("/tracks", async (req, res) => {
 });
 
 trackRouter.get("/tracks", async (req, res) => {
-  let filter: NameIdType;
+  let filter: NameIdType = {};
   if (req.query.track_id) {
     filter = { track_id: req.query.track_id.toString() };
   } else if (req.query.track_nombre) {
     filter = { track_nombre: req.query.track_nombre.toString() };
-  } else {
-    filter = {};
   }
   try {
     const tracks = await Track.find(filter).populate({
@@ -72,13 +70,11 @@ trackRouter.patch("/tracks", async (req, res) => {
     return res.status(400).send({ error: "Invalid update" });
   }
   try {
-    let filter: NameIdType;
+    let filter: NameIdType = {};
     if (req.query.track_id) {
       filter = { track_id: req.query.track_id.toString() };
     } else if (req.query.track_nombre) {
       filter = { track_nombre: req.query.track_nombre.toString() };
-    } else {
-      filter = {};
     }
     const track = await Track.findOneAndUpdate(filter, req.body, {
       new: true,
@@ -102,13 +98,11 @@ trackRouter.delete("/tracks", async (req, res) => {
   }
 
   try {
-    let filter: NameIdType;
+    let filter: NameIdType = {};
     if (req.query.track_id) {
       filter = { track_id: req.query.track_id.toString() };
     } else if (req.query.track_nombre) {
       filter = { track_nombre: req.query.track_nombre.toString() };
-    } else {
-      filter = {};
     }
 
     //Eliminar el track de las rutas favoritas de los usuarios

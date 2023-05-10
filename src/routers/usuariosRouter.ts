@@ -25,17 +25,11 @@ usuariosRouter.post("/users", async (req, res) => {
 });
 
 usuariosRouter.get("/users", async (req, res) => {
-  let filter: FilterType;
+  let filter: FilterType = {};
   if (req.query.usuario_id) {
-    filter = req.query.usuario_id
-      ? { usuario_id: req.query.usuario_id.toString() }
-      : {};
+    filter = { usuario_id: req.query.usuario_id.toString() };
   } else if (req.query.usuario_nombre) {
-    filter = req.query.usuario_nombre
-      ? { usuario_nombre: req.query.usuario_nombre.toString() }
-      : {};
-  } else {
-    filter = {};
+    filter = { usuario_nombre: req.query.usuario_nombre.toString() };
   }
   try {
     const usuarios = await Usuario.find(filter);
@@ -67,13 +61,11 @@ usuariosRouter.patch("/users", async (req, res) => {
     });
   }
   try {
-    let filter: FilterType;
+    let filter: FilterType = {};
     if (req.query.usuario_id) {
       filter = { usuario_id: req.query.usuario_id.toString() };
     } else if (req.query.usuario_nombre) {
       filter = { usuario_nombre: req.query.usuario_nombre.toString() };
-    } else {
-      filter = {};
     }
     const user = await Usuario.findOneAndUpdate(filter, req.body, {
       new: true,
@@ -96,13 +88,11 @@ usuariosRouter.delete("/users", async (req, res) => {
     });
   }
   try {
-    let filter: FilterType;
+    let filter: FilterType = {};
     if (req.query.usuario_id) {
       filter = { usuario_id: req.query.usuario_id.toString() };
     } else if (req.query.usuario_nombre) {
       filter = { usuario_nombre: req.query.usuario_nombre.toString() };
-    } else {
-      filter = {};
     }
     // Eliminar usuario de la lista de amigos de otros usuarios
     const deleted_user = await Usuario.findOne(filter);

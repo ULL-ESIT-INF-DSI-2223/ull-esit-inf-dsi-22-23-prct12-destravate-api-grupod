@@ -23,13 +23,11 @@ retosRouter.post("/challenges", async (req, res) => {
 });
 
 retosRouter.get("/challenges", async (req, res) => {
-  let filter: NameIdType;
+  let filter: NameIdType = {};
   if (req.query.reto_id) {
     filter = { reto_id: req.query.reto_id.toString() };
   } else if (req.query.reto_nombre) {
     filter = { reto_nombre: req.query.reto_nombre.toString() };
-  } else {
-    filter = {};
   }
   try {
     const retos = await Reto.find(filter);
@@ -63,13 +61,11 @@ retosRouter.patch("/challenges", async (req, res) => {
     return res.status(400).send({ error: "Invalid update" });
   }
   try {
-    let filter: NameIdType;
+    let filter: NameIdType = {};
     if (req.query.reto_id) {
       filter = { reto_id: req.query.reto_id.toString() };
     } else if (req.query.reto_nombre) {
       filter = { reto_nombre: req.query.reto_nombre.toString() };
-    } else {
-      filter = {};
     }
 
     const reto = await Reto.findOneAndUpdate(filter, req.body, {
@@ -94,13 +90,11 @@ retosRouter.delete("/challenges", async (req, res) => {
   }
 
   try {
-    let filter: NameIdType;
+    let filter: NameIdType = {};
     if (req.query.reto_id) {
       filter = { reto_id: req.query.reto_id.toString() };
     } else if (req.query.reto_nombre) {
       filter = { reto_nombre: req.query.reto_nombre.toString() };
-    } else {
-      filter = {};
     }
     //Eliminar reto de los usuarios que lo estén realizando
     const deleted_reto = await Reto.findOne(filter);

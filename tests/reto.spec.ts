@@ -38,6 +38,9 @@ describe("GET /challenges", () => {
   it("Debería poder obtener un reto por su id", async () => {
     await request(app).get("/challenges?reto_id=999").expect(200);
   });
+  it("Debería poder obtener todos los retos", async () => {
+    await request(app).get("/challenges").expect(200);
+  });
   it("Debería fallar al intentar obtener un reto que no existe", async () => {
     await request(app).get("/challenges?reto_id=123").expect(404);
   });

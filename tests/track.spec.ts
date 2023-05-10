@@ -42,6 +42,9 @@ describe("GET /tracks", () => {
   it("Debería poder obtener un track por su id", async () => {
     await request(app).get("/tracks?track_id=999").expect(200);
   });
+  it("Debería poder obtener todos los tracks", async () => {
+    await request(app).get("/tracks").expect(200);
+  });
   it("Debería fallar al intentar obtener un track que no existe", async () => {
     await request(app).get("/tracks?track_id=123").expect(404);
   });
