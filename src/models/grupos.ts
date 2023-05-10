@@ -40,7 +40,7 @@ const GrupoSchema = new Schema<GrupoInterface>({
       }
     },
   },
-  participantes: { type: [Schema.Types.ObjectId] },
+  participantes: { type: [Schema.Types.ObjectId], ref: "Usuario" },
   estadisticas_grupales: {
     km_semana: {
       type: Number,
@@ -97,10 +97,15 @@ const GrupoSchema = new Schema<GrupoInterface>({
       },
     },
   },
-  rutas_favoritas: { type: [Schema.Types.ObjectId], required: true },
+  rutas_favoritas: {
+    type: [Schema.Types.ObjectId],
+    required: true,
+    ref: "Track",
+  },
   historico_rutas: {
     type: [{ fecha: Date, ruta: Schema.Types.ObjectId }],
     required: true,
+    ref: "Track",
   },
 });
 

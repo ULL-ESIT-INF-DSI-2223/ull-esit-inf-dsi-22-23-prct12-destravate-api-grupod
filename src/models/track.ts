@@ -45,7 +45,7 @@ const TrackSchema = new Schema<TrackInterface>({
       }
     },
   },
-  usuarios_realizados: { type: [Schema.Types.ObjectId], required: true },
+  usuarios_realizados: { type: [Schema.Types.ObjectId], required: true, ref: "Usuario" },
   tipo: {
     type: String,
     trim: true,

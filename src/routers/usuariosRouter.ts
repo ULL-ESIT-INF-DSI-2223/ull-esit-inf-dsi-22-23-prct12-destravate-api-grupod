@@ -1,5 +1,8 @@
 import express from "express";
 import { Usuario } from "../models/usuarios.js";
+import { Grupo } from "../models/grupos.js";
+import { Reto } from "../models/retos.js";
+import { Track } from "../models/track.js";
 
 type FilterType =
   | {
@@ -101,6 +104,44 @@ usuariosRouter.delete("/users", async (req, res) => {
     } else {
       filter = {};
     }
+    // Eliminar usuario de la lista de amigos de otros usuarios
+    const deleted_user = await Usuario.findOne(filter);
+    const users = await Usuario.find({});
+    users.forEach(async (user) => {
+      const index = user.amigos.indexOf(deleted_user?._id);
+      if (index > -1) {
+        user.amigos.splice(index, 1);
+        await user.save();
+      }
+    });
+    // Eliminar usuario de la lista de usuarios de los grupos
+    const grupos = await Grupo.find({});
+    grupos.forEach(async (grupo) => {
+      const index = grupo.participantes.indexOf(deleted_user?._id);
+      if (index > -1) {
+        grupo.participantes.splice(index, 1);
+        await grupo.save();
+      }
+    });
+    // Eliminar usuario de la lista de usuarios de los retos
+    const retos = await Reto.find({});
+    retos.forEach(async (reto) => {
+      const index = reto.usuarios_realizando.indexOf(deleted_user?._id);
+      if (index > -1) {
+        reto.usuarios_realizando.splice(index, 1);
+        await reto.save();
+      }
+    });
+    // Eliminar usuario de la lista de usuarios de las rutas
+    const tracks = await Track.find({});
+    tracks.forEach(async (track) => {
+      const index = track.usuarios_realizados.indexOf(deleted_user?._id);
+      if (index > -1) {
+        track.usuarios_realizados.splice(index, 1);
+        await track.save();
+      }
+    });
+
     const user = await Usuario.findOneAndDelete(filter);
     if (user) {
       return res.status(200).send(user);

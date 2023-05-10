@@ -50,8 +50,8 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
     trim: true,
     enum: ["correr", "bicicleta"],
   },
-  amigos: { type: [Schema.Types.ObjectId], default: [] },
-  grupos: { type: [Schema.Types.ObjectId], default: [] },
+  amigos: { type: [Schema.Types.ObjectId], default: [], ref: "Usuario" },
+  grupos: { type: [Schema.Types.ObjectId], default: [], ref: "Grupo" },
   estadisticas: {
     km_semana: {
       type: Number,
@@ -108,11 +108,12 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
       },
     },
   },
-  rutas_favoritas: { type: [Schema.Types.ObjectId], default: [] },
-  retos_activos: { type: [Schema.Types.ObjectId], default: [] },
+  rutas_favoritas: { type: [Schema.Types.ObjectId], default: [], ref: "Track" },
+  retos_activos: { type: [Schema.Types.ObjectId], default: [], ref: "Reto" },
   historico_rutas: {
     type: [{ fecha: Date, ruta: Schema.Types.ObjectId }],
     default: [],
+    ref: "Track",
   },
 });
 
