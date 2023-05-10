@@ -1,5 +1,6 @@
 import express from "express";
 import { Reto } from "../models/retos.js";
+import { Usuario } from "../models/usuarios.js";
 
 export const retosRouter = express.Router();
 
@@ -101,6 +102,17 @@ retosRouter.delete("/challenges", async (req, res) => {
     } else {
       filter = {};
     }
+    //Eliminar reto de los usuarios que lo estén realizando
+    const deleted_reto = await Reto.findOne(filter);
+    const usuarios = await Usuario.find({});
+    usuarios.forEach(async (usuario) => {
+      const index1 = usuario.retos_activos.indexOf(deleted_reto?._id);
+      if (index1 > -1) {
+        usuario.retos_activos.splice(index1, 1);
+        await usuario.save();
+      }
+    });
+
     const reto = await Reto.findOneAndDelete(filter);
     if (reto) {
       return res.status(200).send(reto);
