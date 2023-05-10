@@ -105,6 +105,7 @@ usuariosRouter.delete("/users", async (req, res) => {
     if (!user) {
       return res.status(404).send({ error: "User not found" });
     }
+
     await Usuario.findByIdAndDelete(user._id);
     return res.send(user);
   } catch (error) {

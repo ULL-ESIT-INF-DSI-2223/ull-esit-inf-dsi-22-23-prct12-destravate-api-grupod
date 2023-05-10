@@ -7,7 +7,7 @@ export interface UsuarioInterface extends Document {
   usuario_id: number;
   usuario_nombre: string;
   actividad: "correr" | "bicicleta";
-  amigos: number[];
+  amigos: UsuarioInterface[];
   grupos: GrupoInterface[];
   estadisticas: {
     km_semana: number;
@@ -50,8 +50,8 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
     trim: true,
     enum: ["correr", "bicicleta"],
   },
-  amigos: { type: [Number], default: [] },
-  grupos: { type: [Number], default: [] },
+  amigos: { type: [Schema.Types.ObjectId], default: [] },
+  grupos: { type: [Schema.Types.ObjectId], default: [] },
   estadisticas: {
     km_semana: {
       type: Number,
