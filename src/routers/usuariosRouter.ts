@@ -77,7 +77,7 @@ usuariosRouter.patch("/users", async (req, res) => {
       runValidators: true,
     });
     if (user) {
-      return res.send(user);
+      return res.status(200).send(user);
     }
     return res.status(404).send({ error: "User not found" });
   } catch (error) {
@@ -102,12 +102,10 @@ usuariosRouter.delete("/users", async (req, res) => {
       filter = {};
     }
     const user = await Usuario.findOneAndDelete(filter);
-    if (!user) {
-      return res.status(404).send({ error: "User not found" });
+    if (user) {
+      return res.status(200).send(user);
     }
-
-    await Usuario.findByIdAndDelete(user._id);
-    return res.send(user);
+    return res.status(404).send({ error: "User not found" });
   } catch (error) {
     return res.status(500).send(error);
   }
