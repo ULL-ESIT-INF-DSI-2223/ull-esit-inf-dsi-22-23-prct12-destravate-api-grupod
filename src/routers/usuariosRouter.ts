@@ -3,7 +3,6 @@ import { Usuario } from "../models/usuarios.js";
 import { Grupo } from "../models/grupos.js";
 import { Reto } from "../models/retos.js";
 import { Track } from "../models/track.js";
-import e from "express";
 
 type FilterType =
   | {

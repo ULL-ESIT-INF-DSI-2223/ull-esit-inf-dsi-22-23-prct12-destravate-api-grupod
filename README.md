@@ -569,7 +569,16 @@ usuariosRouter.patch("/users", async (req, res) => {
         "You must provide at least one of the following: usuario_id, usuario_nombre",
     });
   }
-  const allowedUpdates = ["usuario_nombre", "actividad"];
+  const allowedUpdates = [
+    "usuario_id",
+    "usuario_nombre",
+    "actividad",
+    "amigos",
+    "grupos",
+    "estadisticas",
+    "rutas_favoritas",
+    "retos_activos",
+  ];
   const actualUpdates = Object.keys(req.body);
   const isValidUpdate = actualUpdates.every((update) =>
     allowedUpdates.includes(update)
@@ -718,6 +727,7 @@ gruposRouter.patch("/groups", async (req, res) => {
     });
   }
   const allowedUpdates = [
+    "grupo_id",
     "grupo_nombre",
     "participantes",
     "estadisticas_grupales",
@@ -833,10 +843,11 @@ retosRouter.get("/challenges", async (req, res) => {
 retosRouter.patch("/challenges", async (req, res) => {
   if (!req.query.reto_id && !req.query.reto_nombre) {
     return res.status(400).send({
-      error: "You must provide at least one of the following: reto_id",
+      error: "You must provide at least one of the following: reto_id, reto_nombre",
     });
   }
   const allowedUpdates = [
+    "reto_id",
     "reto_nombre",
     "rutas",
     "tipo",
@@ -962,6 +973,7 @@ trackRouter.patch("/tracks", async (req, res) => {
     });
   }
   const allowedUpdates = [
+    "track_id",
     "track_nombre",
     "localizacionInicio",
     "localizacionFin",
