@@ -1,6 +1,7 @@
 import request from "supertest";
 import { app } from "../src/app.js";
 import { Track } from "../src/models/track.js";
+import { expect } from "chai";
 
 const track = {
   track_id: 999,
@@ -18,7 +19,7 @@ beforeEach(async () => {
 
 describe("POST /tracks", () => {
   it("Debería crear un track", async () => {
-    await request(app)
+    const response = await request(app)
       .post("/tracks")
       .send({
         track_id: 998,
@@ -29,6 +30,11 @@ describe("POST /tracks", () => {
         desnivel: 10,
       })
       .expect(201);
+
+    expect(response.body).to.include({
+      track_id: 998,
+      track_nombre: "Track1",
+    });
   });
   it("Debería fallar al intentar añadir un track existente", async () => {
     await request(app).post("/tracks").send(track).expect(500);

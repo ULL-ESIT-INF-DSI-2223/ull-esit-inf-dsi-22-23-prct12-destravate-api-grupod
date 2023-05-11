@@ -1,6 +1,7 @@
 import request from "supertest";
 import { app } from "../src/app.js";
 import { Grupo } from "../src/models/grupos.js";
+import { expect } from "chai";
 
 const grupo = {
   grupo_id: 999,
@@ -14,13 +15,18 @@ beforeEach(async () => {
 
 describe("POST /groups", () => {
   it("Debería crear un grupo", async () => {
-    await request(app)
+    const response = await request(app)
       .post("/groups")
       .send({
         grupo_id: 998,
         grupo_nombre: "corredores",
       })
       .expect(201);
+
+    expect(response.body).to.include({
+      grupo_id: 998,
+      grupo_nombre: "corredores",
+    });
   });
   it("Debería fallar al intentar añadir un grupo existente", async () => {
     await request(app).post("/groups").send(grupo).expect(500);

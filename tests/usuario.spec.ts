@@ -1,6 +1,7 @@
 import request from "supertest";
 import { app } from "../src/app.js";
 import { Usuario } from "../src/models/usuarios.js";
+import { expect } from "chai";
 
 const usuario = {
   usuario_id: 999,
@@ -15,7 +16,7 @@ beforeEach(async () => {
 
 describe("POST /users", () => {
   it("Debería crear un usuario", async () => {
-    await request(app)
+    const response = await request(app)
       .post("/users")
       .send({
         usuario_id: 998,
@@ -23,6 +24,11 @@ describe("POST /users", () => {
         actividad: "bicicleta",
       })
       .expect(201);
+
+    expect(response.body).to.include({
+      usuario_id: 998,
+      usuario_nombre: "febe",
+    });
   });
   it("Debería fallar al intentar añadir un usuario existente", async () => {
     await request(app).post("/users").send(usuario).expect(500);

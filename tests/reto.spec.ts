@@ -1,6 +1,7 @@
 import request from "supertest";
 import { app } from "../src/app.js";
 import { Reto } from "../src/models/retos.js";
+import { expect } from "chai";
 
 const reto = {
   reto_id: 999,
@@ -16,7 +17,7 @@ beforeEach(async () => {
 
 describe("POST /challenges", () => {
   it("Debería crear un reto", async () => {
-    await request(app)
+    const response = await request(app)
       .post("/challenges")
       .send({
         reto_id: 998,
@@ -25,6 +26,12 @@ describe("POST /challenges", () => {
         km_totales: 100,
       })
       .expect(201);
+
+    expect(response.body).to.include({
+      reto_id: 998,
+      reto_nombre: "paisajes",
+      tipo: "correr",
+    });
   });
   it("Debería fallar al intentar añadir un reto existente", async () => {
     await request(app).post("/challenges").send(reto).expect(500);
