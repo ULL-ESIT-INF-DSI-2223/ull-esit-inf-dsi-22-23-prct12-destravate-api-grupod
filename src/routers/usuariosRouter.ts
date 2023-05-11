@@ -49,7 +49,7 @@ usuariosRouter.patch("/users", async (req, res) => {
         "You must provide at least one of the following: usuario_id, usuario_nombre",
     });
   }
-  const allowedUpdates = ["usuario_nombre", "actividad"];
+  const allowedUpdates = ["usuario_nombre", "actividad", "amigos", "grupos"];
   const actualUpdates = Object.keys(req.body);
   const isValidUpdate = actualUpdates.every((update) =>
     allowedUpdates.includes(update)

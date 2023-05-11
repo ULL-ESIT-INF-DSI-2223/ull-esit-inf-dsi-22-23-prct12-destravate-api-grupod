@@ -979,6 +979,18 @@ trackRouter.delete("/tracks", async (req, res) => {
 
 El router de rutas tendrá las mismas peticiones que los otros routers, con la diferencia de que en la petición de eliminación de rutas, se eliminará la ruta de las rutas favoritas e histórico de los usuarios, de los grupos y de los retos.
 
+### Router por defecto
+
+Para las peticiones que no se encuentren en ninguno de los routers anteriores, se ha creado un router por defecto, que devolverá un error 404.
+
+```typescript
+export const defaultRouter = express.Router();
+
+defaultRouter.all("*", (_, res) => {
+  res.status(404).send({ error: "Route not found" });
+});
+```
+
 ## Conexion con la base de datos
 
 Para la conexión con la base de datos se ha utilizado la librería mongoose.
