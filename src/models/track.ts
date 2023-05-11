@@ -49,6 +49,12 @@ const TrackSchema = new Schema<TrackInterface>({
     type: [Schema.Types.ObjectId],
     ref: "Usuario",
     default: [],
+    validate(usuarios: [UsuarioInterface]) {
+      const existingUsers = usuarios.map((usuario) => usuario._id);
+      if (existingUsers.length !== new Set(existingUsers).size) {
+        throw new Error("No puede haber usuarios repetidos");
+      }
+    },
   },
   tipo: {
     type: String,

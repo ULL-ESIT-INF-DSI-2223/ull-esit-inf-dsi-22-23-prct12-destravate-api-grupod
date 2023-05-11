@@ -17,7 +17,6 @@ export interface GrupoInterface extends Document {
   rutas_favoritas: TrackInterface[];
   historico_rutas: { fecha: Date; ruta: TrackInterface }[];
 }
-
 const GrupoSchema = new Schema<GrupoInterface>({
   grupo_id: {
     type: Number,
@@ -39,7 +38,16 @@ const GrupoSchema = new Schema<GrupoInterface>({
       }
     },
   },
-  participantes: { type: [Schema.Types.ObjectId], ref: "Usuario" },
+  participantes: {
+    type: [Schema.Types.ObjectId],
+    ref: "Usuario",
+    validate(usuarios: [UsuarioInterface]) {
+      const existingUsers = usuarios.map((usuario) => usuario._id);
+      if (existingUsers.length !== new Set(existingUsers).size) {
+        throw new Error("No puede haber usuarios repetidos");
+      }
+    },
+  },
   estadisticas_grupales: {
     km_semana: {
       type: Number,

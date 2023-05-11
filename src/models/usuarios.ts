@@ -50,8 +50,28 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
     trim: true,
     enum: ["correr", "bicicleta"],
   },
-  amigos: { type: [Schema.Types.ObjectId], default: [], ref: "Usuario" },
-  grupos: { type: [Schema.Types.ObjectId], default: [], ref: "Grupo" },
+  amigos: {
+    type: [Schema.Types.ObjectId],
+    default: [],
+    ref: "Usuario",
+    validate(friends: UsuarioInterface[]) {
+      const existingFriends = friends.map((friend) => friend._id);
+      if (existingFriends.length !== new Set(existingFriends).size) {
+        throw new Error("No puede haber amigos repetidos");
+      }
+    },
+  },
+  grupos: {
+    type: [Schema.Types.ObjectId],
+    default: [],
+    ref: "Grupo",
+    validate(groups: GrupoInterface[]) {
+      const existingGroups = groups.map((group) => group.grupo_id);
+      if (existingGroups.length !== new Set(existingGroups).size) {
+        throw new Error("No puede haber grupos repetidos");
+      }
+    },
+  },
   estadisticas: {
     km_semana: {
       type: Number,
@@ -108,8 +128,28 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
       },
     },
   },
-  rutas_favoritas: { type: [Schema.Types.ObjectId], default: [], ref: "Track" },
-  retos_activos: { type: [Schema.Types.ObjectId], default: [], ref: "Reto" },
+  rutas_favoritas: {
+    type: [Schema.Types.ObjectId],
+    default: [],
+    ref: "Track",
+    validate(favorites: TrackInterface[]) {
+      const existingFavorites = favorites.map((favorite) => favorite._id);
+      if (existingFavorites.length !== new Set(existingFavorites).size) {
+        throw new Error("No puede haber rutas favoritas repetidas");
+      }
+    },
+  },
+  retos_activos: {
+    type: [Schema.Types.ObjectId],
+    default: [],
+    ref: "Reto",
+    validate(challenges: RetoInterface[]) {
+      const existingChallenges = challenges.map((challenge) => challenge._id);
+      if (existingChallenges.length !== new Set(existingChallenges).size) {
+        throw new Error("No puede haber retos activos repetidos");
+      }
+    },
+  },
   historico_rutas: {
     type: [{ fecha: Date, ruta: Schema.Types.ObjectId }],
     default: [],

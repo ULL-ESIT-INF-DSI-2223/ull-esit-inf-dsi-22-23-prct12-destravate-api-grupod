@@ -33,7 +33,17 @@ const RetoSchema = new Schema<RetoInterface>({
       }
     },
   },
-  rutas: { type: [Schema.Types.ObjectId], ref: "Track", default: [] },
+  rutas: {
+    type: [Schema.Types.ObjectId],
+    ref: "Track",
+    default: [],
+    validate(rutas: [TrackInterface]) {
+      const existingRutas = rutas.map((ruta) => ruta._id);
+      if (existingRutas.length !== new Set(existingRutas).size) {
+        throw new Error("No puede haber rutas repetidas");
+      }
+    },
+  },
   tipo: {
     type: String,
     trim: true,
@@ -53,6 +63,12 @@ const RetoSchema = new Schema<RetoInterface>({
     type: [Schema.Types.ObjectId],
     ref: "Usuario",
     default: [],
+    validate(usuarios: [UsuarioInterface]) {
+      const existingUsers = usuarios.map((usuario) => usuario._id);
+      if (existingUsers.length !== new Set(existingUsers).size) {
+        throw new Error("No puede haber usuarios repetidos");
+      }
+    },
   },
 });
 
