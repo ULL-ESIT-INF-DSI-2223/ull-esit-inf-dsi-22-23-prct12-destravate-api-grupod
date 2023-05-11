@@ -70,6 +70,11 @@ En primer lugar, tendremos que definir los esquemas y modelos para cada uno de l
 ### Modelo de usuarios
 
 ```typescript
+import { Document, model, Schema } from "mongoose";
+import { TrackInterface } from "./track.js";
+import { RetoInterface } from "./retos.js";
+import { GrupoInterface } from "./grupos.js";
+
 export interface UsuarioInterface extends Document {
   usuario_id: number;
   usuario_nombre: string;
@@ -117,8 +122,28 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
     trim: true,
     enum: ["correr", "bicicleta"],
   },
-  amigos: { type: [Schema.Types.ObjectId], default: [], ref: "Usuario" },
-  grupos: { type: [Schema.Types.ObjectId], default: [], ref: "Grupo" },
+  amigos: {
+    type: [Schema.Types.ObjectId],
+    default: [],
+    ref: "Usuario",
+    validate(friends: UsuarioInterface[]) {
+      const existingFriends = friends.map((friend) => friend._id);
+      if (existingFriends.length !== new Set(existingFriends).size) {
+        throw new Error("No puede haber amigos repetidos");
+      }
+    },
+  },
+  grupos: {
+    type: [Schema.Types.ObjectId],
+    default: [],
+    ref: "Grupo",
+    validate(groups: GrupoInterface[]) {
+      const existingGroups = groups.map((group) => group.grupo_id);
+      if (existingGroups.length !== new Set(existingGroups).size) {
+        throw new Error("No puede haber grupos repetidos");
+      }
+    },
+  },
   estadisticas: {
     km_semana: {
       type: Number,
@@ -175,8 +200,28 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
       },
     },
   },
-  rutas_favoritas: { type: [Schema.Types.ObjectId], default: [], ref: "Track" },
-  retos_activos: { type: [Schema.Types.ObjectId], default: [], ref: "Reto" },
+  rutas_favoritas: {
+    type: [Schema.Types.ObjectId],
+    default: [],
+    ref: "Track",
+    validate(favorites: TrackInterface[]) {
+      const existingFavorites = favorites.map((favorite) => favorite._id);
+      if (existingFavorites.length !== new Set(existingFavorites).size) {
+        throw new Error("No puede haber rutas favoritas repetidas");
+      }
+    },
+  },
+  retos_activos: {
+    type: [Schema.Types.ObjectId],
+    default: [],
+    ref: "Reto",
+    validate(challenges: RetoInterface[]) {
+      const existingChallenges = challenges.map((challenge) => challenge._id);
+      if (existingChallenges.length !== new Set(existingChallenges).size) {
+        throw new Error("No puede haber retos activos repetidos");
+      }
+    },
+  },
   historico_rutas: {
     type: [{ fecha: Date, ruta: Schema.Types.ObjectId }],
     default: [],
@@ -187,11 +232,15 @@ const UsuarioSchema = new Schema<UsuarioInterface>({
 export const Usuario = model<UsuarioInterface>("Usuario", UsuarioSchema);
 ```
 
-En primer lugar, definimos una interfaz que nos permitirá definir el tipo de los datos que se almacenarán en la base de datos. Luego, definimos el esquema que tendrá cada documento de la colección. Para cada propiedad, definimos el tipo de dato que almacenará, si es requerido o no, si tiene un valor por defecto, si tiene un valor único, o si tiene un validador que compruebe que el valor que se le pasa es correcto. En el caso de atributos que dependan de otros objetos, por ejemplo la lista de amigos, definimos el tipo como `Schema.Types.ObjectId` y le indicamos que se refiere a la colección `Usuario`. Lo mismo ocurre con los grupos, las rutas favoritas, los retos activos y el histórico de rutas. Finalmente, creamos el modelo a partir del esquema y lo exportamos.
+En primer lugar, definimos una interfaz que nos permitirá definir el tipo de los datos que se almacenarán en la base de datos. Luego, definimos el esquema que tendrá cada documento de la colección. Para cada propiedad, definimos el tipo de dato que almacenará, si es requerido o no, si tiene un valor por defecto, si tiene un valor único, o si tiene un validador que compruebe que el valor que se le pasa es correcto. En el caso de atributos que dependan de otros objetos, por ejemplo la lista de amigos, definimos el tipo como `Schema.Types.ObjectId` y le indicamos que se refiere a la colección `Usuario`. Lo mismo ocurre con los grupos, las rutas favoritas, los retos activos y el histórico de rutas. Finalmente, creamos el modelo a partir del esquema y lo exportamos. Por otra parte, no se permiten duplicados en las listas de amigos, grupos, rutas favoritas y retos activos, por lo que se añade un validador que comprueba que no haya duplicados en estas listas.
 
 ### Modelo de grupos
 
 ```typescript
+import { Document, model, Schema } from "mongoose";
+import { TrackInterface } from "./track.js";
+import { UsuarioInterface } from "./usuarios.js";
+
 export interface GrupoInterface extends Document {
   grupo_id: number;
   grupo_nombre: string;
@@ -207,7 +256,6 @@ export interface GrupoInterface extends Document {
   rutas_favoritas: TrackInterface[];
   historico_rutas: { fecha: Date; ruta: TrackInterface }[];
 }
-
 const GrupoSchema = new Schema<GrupoInterface>({
   grupo_id: {
     type: Number,
@@ -229,7 +277,16 @@ const GrupoSchema = new Schema<GrupoInterface>({
       }
     },
   },
-  participantes: { type: [Schema.Types.ObjectId], ref: "Usuario" },
+  participantes: {
+    type: [Schema.Types.ObjectId],
+    ref: "Usuario",
+    validate(usuarios: [UsuarioInterface]) {
+      const existingUsers = usuarios.map((usuario) => usuario._id);
+      if (existingUsers.length !== new Set(existingUsers).size) {
+        throw new Error("No puede haber usuarios repetidos");
+      }
+    },
+  },
   estadisticas_grupales: {
     km_semana: {
       type: Number,
@@ -301,11 +358,15 @@ const GrupoSchema = new Schema<GrupoInterface>({
 export const Grupo = model<GrupoInterface>("Grupo", GrupoSchema);
 ```
 
-De forma similar, definimos una interfaz que describa el tipo de datos que almacena un documento de grupo. Luego, definimos el esquema detallando los atributos de cada una de las propiedades y, al final, creamos el modelo y lo exportamos.
+De forma similar, definimos una interfaz que describa el tipo de datos que almacena un documento de grupo. Luego, definimos el esquema detallando los atributos de cada una de las propiedades y, al final, creamos el modelo y lo exportamos. No se permiten duplicados en la lista de participantes, por lo que se añade un validador que comprueba que no haya duplicados en esta lista.
 
 ### Modelo de retos
 
 ```typescript
+import { Document, model, Schema } from "mongoose";
+import { TrackInterface } from "./track.js";
+import { UsuarioInterface } from "./usuarios.js";
+
 export interface RetoInterface extends Document {
   reto_id: number;
   reto_nombre: string;
@@ -337,7 +398,17 @@ const RetoSchema = new Schema<RetoInterface>({
       }
     },
   },
-  rutas: { type: [Schema.Types.ObjectId], ref: "Track", default: [] },
+  rutas: {
+    type: [Schema.Types.ObjectId],
+    ref: "Track",
+    default: [],
+    validate(rutas: [TrackInterface]) {
+      const existingRutas = rutas.map((ruta) => ruta._id);
+      if (existingRutas.length !== new Set(existingRutas).size) {
+        throw new Error("No puede haber rutas repetidas");
+      }
+    },
+  },
   tipo: {
     type: String,
     trim: true,
@@ -357,17 +428,26 @@ const RetoSchema = new Schema<RetoInterface>({
     type: [Schema.Types.ObjectId],
     ref: "Usuario",
     default: [],
+    validate(usuarios: [UsuarioInterface]) {
+      const existingUsers = usuarios.map((usuario) => usuario._id);
+      if (existingUsers.length !== new Set(existingUsers).size) {
+        throw new Error("No puede haber usuarios repetidos");
+      }
+    },
   },
 });
 
 export const Reto = model<RetoInterface>("Reto", RetoSchema);
 ```
 
-De igual manera, definimos el modelo de retos.
+De igual manera, definimos el modelo de retos. En este caso, no se permiten duplicados en la lista de rutas, por lo que se añade un validador que comprueba que no haya duplicados en esta lista.
 
 ### Modelo de rutas
 
 ```typescript
+import { Document, model, Schema } from "mongoose";
+import { UsuarioInterface } from "./usuarios.js";
+
 export interface TrackInterface extends Document {
   track_id: number;
   track_nombre: string;
@@ -416,6 +496,12 @@ const TrackSchema = new Schema<TrackInterface>({
     type: [Schema.Types.ObjectId],
     ref: "Usuario",
     default: [],
+    validate(usuarios: [UsuarioInterface]) {
+      const existingUsers = usuarios.map((usuario) => usuario._id);
+      if (existingUsers.length !== new Set(existingUsers).size) {
+        throw new Error("No puede haber usuarios repetidos");
+      }
+    },
   },
   tipo: {
     type: String,
@@ -429,7 +515,7 @@ const TrackSchema = new Schema<TrackInterface>({
 export const Track = model<TrackInterface>("Track", TrackSchema);
 ```
 
-Finalmente, definimos el modelo de rutas.
+Finalmente, definimos el modelo de rutas. No pueden haber duplicados en la lista de usuarios que han realizado la ruta, por lo que se añade un validador que comprueba que no haya duplicados en esta lista. Además, la calificación de la ruta debe estar entre 0 y 5, por lo que se añade un validador que comprueba que se cumple esta condición.
 
 ## Routers
 
