@@ -17,7 +17,6 @@ export interface GrupoInterface extends Document {
   rutas_favoritas: TrackInterface[];
   historico_rutas: { fecha: Date; ruta: TrackInterface }[];
 }
-
 const GrupoSchema = new Schema<GrupoInterface>({
   grupo_id: {
     type: Number,
