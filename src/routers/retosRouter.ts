@@ -43,10 +43,11 @@ retosRouter.get("/challenges", async (req, res) => {
 retosRouter.patch("/challenges", async (req, res) => {
   if (!req.query.reto_id && !req.query.reto_nombre) {
     return res.status(400).send({
-      error: "You must provide at least one of the following: reto_id",
+      error: "You must provide at least one of the following: reto_id, reto_nombre",
     });
   }
   const allowedUpdates = [
+    "reto_id",
     "reto_nombre",
     "rutas",
     "tipo",

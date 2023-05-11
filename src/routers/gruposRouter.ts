@@ -47,6 +47,7 @@ gruposRouter.patch("/groups", async (req, res) => {
     });
   }
   const allowedUpdates = [
+    "grupo_id",
     "grupo_nombre",
     "participantes",
     "estadisticas_grupales",

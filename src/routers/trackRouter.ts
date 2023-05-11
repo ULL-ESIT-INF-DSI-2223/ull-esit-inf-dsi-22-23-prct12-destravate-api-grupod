@@ -54,6 +54,7 @@ trackRouter.patch("/tracks", async (req, res) => {
     });
   }
   const allowedUpdates = [
+    "track_id",
     "track_nombre",
     "localizacionInicio",
     "localizacionFin",

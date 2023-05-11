@@ -3,6 +3,7 @@ import { Usuario } from "../models/usuarios.js";
 import { Grupo } from "../models/grupos.js";
 import { Reto } from "../models/retos.js";
 import { Track } from "../models/track.js";
+import e from "express";
 
 type FilterType =
   | {
@@ -49,7 +50,16 @@ usuariosRouter.patch("/users", async (req, res) => {
         "You must provide at least one of the following: usuario_id, usuario_nombre",
     });
   }
-  const allowedUpdates = ["usuario_nombre", "actividad"];
+  const allowedUpdates = [
+    "usuario_id",
+    "usuario_nombre",
+    "actividad",
+    "amigos",
+    "grupos",
+    "estadisticas",
+    "rutas_favoritas",
+    "retos_activos",
+  ];
   const actualUpdates = Object.keys(req.body);
   const isValidUpdate = actualUpdates.every((update) =>
     allowedUpdates.includes(update)
