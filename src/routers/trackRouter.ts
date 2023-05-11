@@ -6,6 +6,9 @@ import { Grupo } from "../models/grupos.js";
 
 export const trackRouter = express.Router();
 
+/**
+ * Will be used to determine if the request is with id or name
+ */
 type NameIdType =
   | {
       track_id?: string;
@@ -14,6 +17,9 @@ type NameIdType =
       track_nombre?: string;
     };
 
+/**
+ * Create track
+ */
 trackRouter.post("/tracks", async (req, res) => {
   const track = new Track(req.body);
 
@@ -25,6 +31,9 @@ trackRouter.post("/tracks", async (req, res) => {
   }
 });
 
+/**
+ * Get tracks
+ */
 trackRouter.get("/tracks", async (req, res) => {
   let filter: NameIdType = {};
   if (req.query.track_id) {
@@ -46,6 +55,9 @@ trackRouter.get("/tracks", async (req, res) => {
   }
 });
 
+/**
+ * Update tracks
+ */
 trackRouter.patch("/tracks", async (req, res) => {
   if (!req.query.track_id && !req.query.track_nombre) {
     return res.status(400).send({
@@ -90,6 +102,9 @@ trackRouter.patch("/tracks", async (req, res) => {
   }
 });
 
+/**
+ * Delete tracks
+ */
 trackRouter.delete("/tracks", async (req, res) => {
   if (!req.query.track_id && !req.query.track_nombre) {
     return res.status(400).send({

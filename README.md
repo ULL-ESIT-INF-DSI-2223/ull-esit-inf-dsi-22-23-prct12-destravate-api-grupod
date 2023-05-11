@@ -448,11 +448,12 @@ De igual manera, definimos el modelo de retos. En este caso, no se permiten dupl
 import { Document, model, Schema } from "mongoose";
 import { UsuarioInterface } from "./usuarios.js";
 
+export type Coordenadas = [number, number];
 export interface TrackInterface extends Document {
   track_id: number;
   track_nombre: string;
-  localizacionInicio: string;
-  localizacionFin: string;
+  localizacionInicio: Coordenadas;
+  localizacionFin: Coordenadas;
   desnivel: number;
   usuarios_realizados: UsuarioInterface[];
   tipo: "correr" | "bicicleta";
@@ -481,8 +482,26 @@ const TrackSchema = new Schema<TrackInterface>({
       }
     },
   },
-  localizacionInicio: { type: String, trim: true, required: true },
-  localizacionFin: { type: String, trim: true, required: true },
+  localizacionInicio: {
+    type: [Number],
+    required: true,
+
+    validate(value: [number, number]) {
+      if (value.length !== 2) {
+        throw new Error("localizacionInicio must be an array of length 2");
+      }
+    },
+  },
+  localizacionFin: {
+    type: [Number],
+    required: true,
+
+    validate(value: [number, number]) {
+      if (value.length !== 2) {
+        throw new Error("localizacionFin must be an array of length 2");
+      }
+    },
+  },
   desnivel: {
     type: Number,
     required: true,

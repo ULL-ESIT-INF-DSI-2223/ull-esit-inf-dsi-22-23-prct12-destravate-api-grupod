@@ -4,6 +4,9 @@ import { Usuario } from "../models/usuarios.js";
 
 export const gruposRouter = express.Router();
 
+/**
+ * Will be used to determine if the request is with id or name
+ */
 type NameIdType =
   | {
       grupo_id?: string;
@@ -12,6 +15,9 @@ type NameIdType =
       grupo_nombre?: string;
     };
 
+/**
+ * Create group
+ */
 gruposRouter.post("/groups", async (req, res) => {
   const grupo = new Grupo(req.body);
   try {
@@ -22,6 +28,9 @@ gruposRouter.post("/groups", async (req, res) => {
   }
 });
 
+/**
+ * Get groups
+ */
 gruposRouter.get("/groups", async (req, res) => {
   let filter: NameIdType = {};
   if (req.query.grupo_id) {
@@ -40,6 +49,9 @@ gruposRouter.get("/groups", async (req, res) => {
   }
 });
 
+/**
+ * Update groups
+ */
 gruposRouter.patch("/groups", async (req, res) => {
   if (!req.query.grupo_id && !req.query.grupo_nombre) {
     return res.status(400).send({
@@ -82,6 +94,9 @@ gruposRouter.patch("/groups", async (req, res) => {
   }
 });
 
+/**
+ * Delete groups
+ */
 gruposRouter.delete("/groups", async (req, res) => {
   if (!req.query.grupo_id && !req.query.grupo_nombre) {
     return res.status(400).send({

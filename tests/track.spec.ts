@@ -6,8 +6,8 @@ import { expect } from "chai";
 const track = {
   track_id: 999,
   track_nombre: "Test",
-  localizacionInicio: "Test",
-  localizacionFin: "Test",
+  localizacionInicio: [22, 33],
+  localizacionFin: [33 ,44],
   tipo: "correr",
   desnivel: 10,
 };
@@ -24,8 +24,8 @@ describe("POST /tracks", () => {
       .send({
         track_id: 998,
         track_nombre: "Track1",
-        localizacionInicio: "Test",
-        localizacionFin: "Test",
+        localizacionInicio: [22, 33],
+        localizacionFin: [33 ,44],
         tipo: "correr",
         desnivel: 10,
       })
@@ -34,6 +34,7 @@ describe("POST /tracks", () => {
     expect(response.body).to.include({
       track_id: 998,
       track_nombre: "Track1",
+      tipo: "correr",
     });
   });
   it("Debería fallar al intentar añadir un track existente", async () => {

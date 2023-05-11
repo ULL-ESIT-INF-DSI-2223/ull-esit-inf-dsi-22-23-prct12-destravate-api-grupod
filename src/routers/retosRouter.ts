@@ -4,6 +4,9 @@ import { Usuario } from "../models/usuarios.js";
 
 export const retosRouter = express.Router();
 
+/**
+ * Will be used to determine if the request is with id or name
+ */
 type NameIdType =
   | {
       reto_id?: string;
@@ -12,6 +15,9 @@ type NameIdType =
       reto_nombre?: string;
     };
 
+/**
+ * Create reto
+ */
 retosRouter.post("/challenges", async (req, res) => {
   const reto = new Reto(req.body);
   try {
@@ -22,6 +28,9 @@ retosRouter.post("/challenges", async (req, res) => {
   }
 });
 
+/**
+ * Get retos
+ */
 retosRouter.get("/challenges", async (req, res) => {
   let filter: NameIdType = {};
   if (req.query.reto_id) {
@@ -40,6 +49,9 @@ retosRouter.get("/challenges", async (req, res) => {
   }
 });
 
+/**
+ * Update retos
+ */
 retosRouter.patch("/challenges", async (req, res) => {
   if (!req.query.reto_id && !req.query.reto_nombre) {
     return res.status(400).send({
@@ -82,6 +94,9 @@ retosRouter.patch("/challenges", async (req, res) => {
   }
 });
 
+/**
+ * Delete retos
+ */
 retosRouter.delete("/challenges", async (req, res) => {
   if (!req.query.reto_id && !req.query.reto_nombre) {
     return res.status(400).send({

@@ -4,6 +4,9 @@ import { Grupo } from "../models/grupos.js";
 import { Reto } from "../models/retos.js";
 import { Track } from "../models/track.js";
 
+/**
+ * Will be used to determine if the request is with id or name
+ */
 type FilterType =
   | {
       usuario_id?: string;
@@ -14,6 +17,9 @@ type FilterType =
 
 export const usuariosRouter = express.Router();
 
+/**
+ * Create usuario
+ */
 usuariosRouter.post("/users", async (req, res) => {
   const usuario = new Usuario(req.body);
   try {
@@ -24,6 +30,9 @@ usuariosRouter.post("/users", async (req, res) => {
   }
 });
 
+/**
+ * Get usuarios
+ */
 usuariosRouter.get("/users", async (req, res) => {
   let filter: FilterType = {};
   if (req.query.usuario_id) {
@@ -42,6 +51,9 @@ usuariosRouter.get("/users", async (req, res) => {
   }
 });
 
+/**
+ * Update usuarios
+ */
 usuariosRouter.patch("/users", async (req, res) => {
   if (!req.query.usuario_nombre && !req.query.usuario_id) {
     return res.status(400).send({
@@ -89,6 +101,9 @@ usuariosRouter.patch("/users", async (req, res) => {
   }
 });
 
+/**
+ * Delete usuarios
+ */
 usuariosRouter.delete("/users", async (req, res) => {
   if (!req.query.usuario_nombre && !req.query.usuario_id) {
     return res.status(400).send({
